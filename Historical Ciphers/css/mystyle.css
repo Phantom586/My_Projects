@@ -1,0 +1,33 @@
+.btns{
+    position: absolute; 
+    top: 3%;
+    left: 90%;
+}
+.btns1{
+    position: absolute;
+    top: 3%;
+    left: 95%;
+}
+.Encrypt_container{
+    margin-top: 5%;
+    margin-left: 2%;
+}
+
+.btn12{
+    margin-top: 15%;
+    margin-left: 15%;
+}
+
+#ta{
+    margin-top: 5%;
+}
+
+#opt{
+    margin-left: 10%;
+}
+
+.container{
+    position: absolute;
+    top: 10%;
+    left:50%;
+}

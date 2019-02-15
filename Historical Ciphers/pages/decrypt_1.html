@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Decrypt 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../css/mystyle.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/bootstrap.css" />
+    <script src="../js/bootstrap.bundle.js"></script>
+    <script src="../index.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Application Name</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                    <div class="btns">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Register</a>
+                        </li>
+                    </div>
+                    <div class="btns1">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Log In</a>
+                        </li>
+                    </div>
+            </div>
+        </nav>
+
+        <h2 align="center">Decryption Cipher 1</h2>
+
+        <pre>
+            <textarea name="" id="ta" cols="90" rows="40">
+                    #include <iostream> 
+                            using namespace std;
+                            
+                            int main()
+                            {
+                                char msg[100], ch;
+                                int i, key;
+                                cout << "Enter a message to decrypt: ";
+                                gets(msg);
+                                cout << "Enter key: ";
+                                cin >> key;
+                                for(i = 0; msg[i] != '\0'; ++i){
+                                    ch = msg[i];
+                                    
+                                    if(ch >= 'a' && ch <= 'z'){
+                                        ch = ch - key;
+                                        
+                                        if(ch < 'a'){
+                                            ch = ch + 'z' - 'a' + 1;
+                                        }
+                                        
+                                        msg[i] = ch;
+                                    }
+                                    else if(ch >= 'A' && ch <= 'Z'){
+                                        ch = ch - key;
+                                        
+                                        if(ch < 'A'){
+                                            ch = ch + 'Z' - 'A' + 1;
+                                        }
+                                        
+                                        msg[i] = ch;
+                                    }
+                                }
+                                cout << "Decrypted message: %s " << msg <<endl;
+                                return 0;
+                            }
+                            
+            </textarea>
+        </pre>
+</body>
+</html>
