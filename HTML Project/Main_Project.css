@@ -1,0 +1,17 @@
+.nav{
+    padding: 15px;
+}
+
+.jumbotron{
+    font-family: 'Roboto', sans-serif;
+}
+
+.container{
+    margin: auto;
+    padding-top: 20px;
+}
+
+img{
+    width:350px;
+    height:214px;
+}
