@@ -1,0 +1,40 @@
+{% extends '../base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+        <link rel="stylesheet" href="{% static 'css/db.css' %}">
+{% endblock %}
+
+{% block container %}
+    <div class="jumbotron">
+        <h1>Welcome to our <strong>Database</strong></h1>
+        <div class="my-4"></div>
+        <h3>Presently We're Using <em>SQLite3</em></h3>
+        <h4>Currently these are our Records.</h4>
+    </div>
+{% endblock %}
+
+{% block login %}
+    <div class="container">
+        {% if user %}
+        <table>
+            <thead>
+                <th>id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </thead>
+                {% for usr in user %}
+                <tr>
+                    <td>{{ usr.id }}</td>
+                    <td>{{ usr.first_name }}</td>
+                    <td>{{ usr.last_name }}</td>
+                    <td>{{ usr.email }}</td>
+                </tr>
+                {% endfor %}
+        </table>
+        {% else %}
+            <p>No Records Found!!</p>
+        {% endif %}
+    </div>
+{% endblock %}

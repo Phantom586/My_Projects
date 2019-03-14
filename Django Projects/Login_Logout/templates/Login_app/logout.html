@@ -1,0 +1,18 @@
+{% extends '../base.html' %}
+
+{% block container %}
+<div class="jumbotron">
+    <h1>Log In!</h1>
+    <div class="my-4"></div>
+    <p>Enter your Credentials!</p>
+</div>
+{% endblock %}
+
+{% block login %}
+    <h2>You have been logged Out</h2>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a href="{% url 'Login_app:login' %}">Log In Again</a>
+        </small>
+    </div>
+{% endblock %}
