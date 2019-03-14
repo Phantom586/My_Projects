@@ -1,0 +1,35 @@
+{% extends '../base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block zero %}
+{% endblock %}
+
+{% block first %}
+    <div class="jumbotron" align="center">
+        <h1>Ph@ntom's Graphics Database</h1>
+    </div>
+{% endblock %}
+
+{% block second %}
+    <table style="width:100%;">
+        <tr>
+            <th><input type="text" placeholder="id"></th>
+            <th><input type="text" placeholder="Device"></th>
+            <th><input type="text" placeholder="Type"></th>
+            <th><input type="text" placeholder="OS"></th>
+            <th><input type="text" placeholder="Version"></th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Device</td>
+            <td>Type</td>
+            <td>OS</td>
+            <td>Version</td>
+        </tr>
+        </table>
+    </table>
+{% endblock %}
