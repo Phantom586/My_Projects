@@ -1,0 +1,18 @@
+{% extends '../base.html' %}
+
+{% block container %}
+    <div class="jumbotron">
+        <h1>Login to Be Secure!!</h1>
+        <div class="my-4"></div>
+        <form action="{% url 'secure_app:user_login' %}" method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" name="username" placeholder="Enter Username">
+
+            <label for="password">Password:</label>
+            <input type="password" name="password">
+
+            <input type="submit" value="Login">
+        </form>
+    </div>
+{% endblock %}
