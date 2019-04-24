@@ -3,4 +3,4 @@
 
 #### This is a Money Manager Application built in Tkinter in python.
 
-[FedUni Login Page](/images/sc1.png)
+![FedUni](images/sc1.png)
