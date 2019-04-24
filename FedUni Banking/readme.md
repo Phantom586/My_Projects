@@ -1,5 +1,5 @@
-# FedUni Banking
-## A Python Tkinter Application
+# FedUni Banking : 
+A Python Tkinter Application
 
 This is a Money Manager Application, which has a functionality of login **Account Number** and **password**.
 
