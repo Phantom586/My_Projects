@@ -26,7 +26,7 @@ class Database:
         
         """
         Description:
-            Creates the Database and gets a cursor to execute sqlite queries.
+            Creates the Database and a cursor to execute sqlite queries.
         """
         
         # Creating the connection Object.
