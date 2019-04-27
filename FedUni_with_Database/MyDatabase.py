@@ -7,18 +7,14 @@ import sqlite3
 class Database:
     
     """
-    Class for making Database Operations easier.
-    """
-    
-    def __init__(self, db_name):
-        
-        """
         Parameters:
             db_name = The name of the Database you want to create.
 
         Description:
             Accepts the name of the Databse you want to create.
-        """
+    """
+    
+    def __init__(self, db_name):
 
         self.db_name = db_name
         # variables for the connection and the cursor objects
