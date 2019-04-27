@@ -37,9 +37,6 @@ class Database:
 
         print(f"DATABASE CREATED ---> {self.db_name}")
 
-        # Returning the cursor object to the user.
-        return self.c
-
 
     def create_table(self, table_name, *fields):
 
