@@ -7,6 +7,17 @@ import matplotlib.pyplot as plt
 
 from moneymanager import MoneyManager
 
+import sqlite3
+
+
+# Creating the conection Object
+conn = sqlite3.connect('records_bank.db')
+
+# acquiring the cursor
+c = conn.cursor()
+
+
+
 win = tk.Tk()
 
 #Set window size here to '540 x 640'
