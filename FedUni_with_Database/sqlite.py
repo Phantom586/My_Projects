@@ -30,11 +30,11 @@ def update():
     db.update_db('account_details', dict, account_no=123456)
 
 def remove():
-    db.remove_from_db('account_details', account_no=123456, pin=3456)
-    db.remove_from_db('account_details', account_no=234556, pin=5667)
+    db.remove_from_db('account_details', account_no=123457, pin=3456)
+    # db.remove_from_db('account_details', account_no=234556, pin=5667)
 
 createdb()
 # createtable()
-insertValue()
-# remove()
+# insertValue()
+remove()
 query()

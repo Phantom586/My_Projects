@@ -77,13 +77,15 @@ class Database:
         self.conn.commit()
 
 
-    def select_from_db(self, table_name, select_what=None, **kwargs):
+    def select_from_db(self, table_name, select_what=None, msg="Values Fetched!!!", **kwargs):
         
         """
         Parameters:
             select_what = what do you want to select form a particular table.
 
             table_name = the name of the table from which you want to select from.
+
+            msg = The msg you want to be displayed when the Query is Successful.
             
             **kwargs = any number of 'name=values' to pass to the query.
 
@@ -105,7 +107,7 @@ class Database:
         # Executing the Query
         self.c.execute(q)
 
-        print("VALUES FETCHED!!!")
+        print(msg)
         # Fetching the Results and returning to the user.
         return self.c.fetchall()
 
@@ -131,7 +133,7 @@ class Database:
             print("INSERT requires some values to be passed to the Table.")
         
         # Just Checking if the values are present in the Database or not.
-        check = self.select_from_db(table_name)
+        check = self.select_from_db(table_name, msg="Checking for INSERT Query!!!")
         if values in check: 
             flag = False
             print(f"{values} is already present in the table ---> {table_name}")
@@ -212,6 +214,13 @@ class Database:
 
         # Flag to indicate whether to execute the query or not.
         flag = True
+
+        # Making Sure if the Value to be Deleted Even Exists in the Database or not.
+        check = self.select_from_db(table_name, msg="Checking for DELETE Query!!!")
+        for keys in kwargs:
+            if (keys, kwargs[keys]) not in check:
+                flag = False
+                print(f"The Value {(keys, kwargs[keys])} doesn't exists in the Database!!!")
 
         q = f'DELETE FROM {table_name} WHERE '
         
