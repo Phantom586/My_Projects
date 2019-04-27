@@ -134,54 +134,55 @@ class Database:
         print(f"INSERTED INTO ---> {table_name}")
 
 
-    # def update_db(self, table_name, **set_values, **kwargs):
+    def update_db(self, table_name, set_values, **kwargs):
 
-    #     """
-    #     Parameters:
-    #         table_name = the name of the table from which you want to select from.
+        """
+        Parameters:
+            table_name = the name of the table from which you want to select from.
 
-    #         **set_values = the values you want to set(update) in the table.
+            set_values = Dictionary of the values you want to set(update) in the table.
+                            Ex: {'name':'Harsh', 'roll'=1234}.
 
-    #         **kwargs = parameters to match the specific field you want to make the update to. 
+            **kwargs = parameters to match the specific Entry(row) you want to make the update to. 
 
-    #     Description:
-    #         Updates the fields of the provided table.
-    #     """
+        Description:
+            Updates the fields of the provided table.
+        """
 
-    #     # Flag to indicate whether to execute the query or not. 
-    #     flag = True
+        # Flag to indicate whether to execute the query or not. 
+        flag = True
 
-    #     q = f"UPDATE {table_name} SET "
+        q = f"UPDATE {table_name} SET "
 
-    #     if set_values:
-    #         for key in set_values:
-    #             q += f'{key}={set_values[key]} AND '
-    #         # removing the extra 'AND' from the query.
-    #         q = q[:len(q)-4]
-    #     else:
-    #         flag = False
-    #         print("Update Failed!! Please pass the Values to Update in the Table.")
+        if set_values != {}:
+            for key in set_values:
+                q += f'{key}={set_values[key]} AND '
+            # removing the extra 'AND' from the query.
+            q = q[:len(q)-4]
+        else:
+            flag = False
+            print("Update Failed!! Please pass the Values to Update in the Table.")
 
-    #     if kwargs:
-    #         q += "WHERE "
-    #         for key in kwargs:
-    #             q += f'{key}={kwargs[key]} AND '
-    #         # removing the extra 'AND' from the query.
-    #         q = q[:len(q)-4]
-    #     else:
-    #         flag = False
-    #         print("Update Failed!! Please pass the Correct Matching Parameters.")
+        if kwargs:
+            q += "WHERE "
+            for key in kwargs:
+                q += f'{key}={kwargs[key]} AND '
+            # removing the extra 'AND' from the query.
+            q = q[:len(q)-4]
+        else:
+            flag = False
+            print("Update Failed!! Please pass the Correct Matching Parameters.")
 
-    #     # Checking If everything is Alright. 
-    #     if flag == True:
-    #         # Context Manager for the Connection object.
-    #         with self.conn:
-    #             self.c.execute(q)
+        # Checking If everything is Alright. 
+        if flag == True:
+            # Context Manager for the Connection object.
+            with self.conn:
+                self.c.execute(q)
 
-    #     # Making COMMIT to the Database.
-    #     self.conn.commit()
+        # Making COMMIT to the Database.
+        self.conn.commit()
 
-    #     print(f"UPDATED TABLE ---> {table_name}")
+        print(f"UPDATED TABLE ---> {table_name}")
         
 
     def remove_from_db(self, table_name, **kwargs):
