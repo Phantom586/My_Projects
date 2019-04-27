@@ -238,8 +238,8 @@ class Database:
             # Context Manager for the Connection object.
             with self.conn:
                 self.c.execute(q)
+                print(f"DELETED Entry from the TABLE ---> {table_name}")
         
         # Making COMMIT to the Database
         self.conn.commit()
-
-        print(f"DELETED Entry from the TABLE ---> {table_name}")
+        
