@@ -221,6 +221,7 @@ class Database:
             if (keys, kwargs[keys]) not in check:
                 flag = False
                 print(f"The Value {(keys, kwargs[keys])} doesn't exists in the Database!!!")
+                break
 
         q = f'DELETE FROM {table_name} WHERE '
         
