@@ -65,13 +65,16 @@ class Database:
 
         # Context Manager for the Connection object
         with self.conn:
-            # Executing the Query
-            self.c.execute(q)
+            # Trying to Execute the Query and providing proper Error Message if not.
+            try:
+                self.c.execute(q)
+                print(f"TABLE Created ---> {table_name}")
+
+            except sqlite3.OperationalError:
+                print(f"TABLE ---> ({table_name}) already exists!!")
         
         # Making COMMIT to the DATABASE
         self.conn.commit()
-
-        print(f"TABLE Created ---> {table_name}")
 
 
     def select_from_db(self, table_name, select_what=None, **kwargs):
@@ -119,19 +122,29 @@ class Database:
             To Insert values into the Database.
         """
 
+        # Flag to check whether the value already exists in the Database or not.
+        flag = True
+
         if values:
             q = f"INSERT INTO {table_name} VALUES{values}"
         else:
             print("INSERT requires some values to be passed to the Table.")
+        
+        # Just Checking if the values are present in the Database or not.
+        check = self.select_from_db(table_name)
+        if values in check: 
+            flag = False
+            print(f"{values} is already present in the table ---> {table_name}")
 
-        # Context manager for the Connecion object
-        with self.conn:
-            self.c.execute(q)
+        if flag == True:
+            # Context manager for the Connecion object
+            with self.conn:
+                self.c.execute(q)
+                print(f"INSERTED INTO ---> {table_name}")
 
         # Making COMMIT to the Database
         self.conn.commit()
 
-        print(f"INSERTED INTO ---> {table_name}")
 
 
     def update_db(self, table_name, set_values, **kwargs):
@@ -204,7 +217,7 @@ class Database:
         
         if kwargs:
             for key in kwargs:
-                q += f'{key}={kwargs[key]} AND'
+                q += f'{key}={kwargs[key]} AND '
             # removing the extra 'AND' from the query.
             q = q[:len(q)-4]
         else:

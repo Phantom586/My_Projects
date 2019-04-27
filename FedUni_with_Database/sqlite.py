@@ -1,32 +1,40 @@
-import sqlite3
+# import the Database Class from MyDatabase
+from MyDatabase import Database
 
-conn = sqlite3.connect('records.db')
+# Creating the instance of the Database Class
+db = Database('records_bank')
 
-c = conn.cursor()
+def createdb():
+    # Creating the Database and acquiring the cursor from the Connection Object
+    db.create_db()
 
-# c.execute("""CREATE TABLE bankdb (
-#     account_no integer,
-#     pin integer
-#     )""")
+def createtable():
+    # Creating the Table
+    db.create_table('account_details', 'account_no integer', 'pin integer')
 
-acc, pin = map(int, input('Enter the Account and pin').split())
+def insertValue():
+    # Now Inserting Some Values
+    db.insert_into_db('account_details', 123456, 3456)
+    db.insert_into_db('account_details', 234556, 5667)
 
-# c.execute('INSERT INTO bankdb VALUES (123456, 3456)')
-# c.execute('INSERT INTO bankdb VALUES (789456,2326)')
-# c.execute('INSERT INTO bankdb VALUES (123434, 0896)')
-# c.execute('INSERT INTO bankdb VALUES (657567, 8797)')
-# c.execute('INSERT INTO bankdb VALUES (:account_no, :pin)', {'account_no':acc, 'pin':pin})
+def query():
+    # Querying the Values from the Database
+    values = db.select_from_db('account_details')
+    for value in values:
+        print(value)
 
+def update():
+    # # Dictionary of the Values to be Updated.
+    dict = {'pin':1234}
 
-c.execute(f'SELECT * FROM bankdb where account_no={acc} and pin={pin}')
+    db.update_db('account_details', dict, account_no=123456)
 
-# c.execute(f'SELECT * FROM bankdb')
+def remove():
+    db.remove_from_db('account_details', account_no=123456, pin=3456)
+    db.remove_from_db('account_details', account_no=234556, pin=5667)
 
-# print(c.fetchall())
-
-if c.fetchone():
-    print("The User Exists!!!")
-
-conn.commit()
-
-conn.close()
+createdb()
+# createtable()
+insertValue()
+# remove()
+query()
