@@ -5,6 +5,7 @@ import sqlite3
 ### Created by Ph@ntom586.
 
 class Database:
+    
     """
         Parameters:
             db_name = The name of the Database you want to create.
@@ -22,6 +23,7 @@ class Database:
     
 
     def create_db(self):
+
         """
         Description:
             Creates the Database and a cursor to execute sqlite queries.
@@ -37,6 +39,7 @@ class Database:
 
 
     def create_table(self, table_name, *fields):
+
         """
         Parameters:
             table_name = The name of the table you want to create.
@@ -75,9 +78,10 @@ class Database:
 
 
     def select_from_db(self, table_name, select_what=None, msg="Values Fetched!!!", **kwargs):
+
         """
         Parameters:
-            select_what = what do you want to select form a particular table.
+            select_what = list of what do you want to select form a particular table.
 
             table_name = the name of the table from which you want to select from.
 
@@ -90,9 +94,15 @@ class Database:
         """
 
         if select_what != None:
-            q = f"SELECT {select_what} FROM {table_name} "
+            q = "SELECT "
+            for param in select_what:
+                q += f"{param}, "
+            # removing extra ',' from the query
+            q = q[:len(q)-2]
+            q += f" FROM {table_name} "
         else:
             q = f"SELECT * FROM {table_name} "
+
         if kwargs:
             q += "WHERE "
             for key in kwargs:
@@ -241,4 +251,24 @@ class Database:
         
         # Making COMMIT to the Database
         self.conn.commit()
-        
+
+    
+    def drop_table(self, table_name):
+
+        """
+        Parameters:
+            table_name = the name of the table from which you want to select from.
+
+        Description:
+            To Delete any Table from the Database.
+        """
+
+        q = f'DROP TABLE {table_name}'
+
+        try:
+            self.c.execute(q)    
+            print(f'Table Deleted Successfully!! --> {table_name}')
+        except:
+            print(f"Table Doesn't Exists!! ---> {table_name}")
+
+        self.conn.commit()
