@@ -196,7 +196,7 @@ class Database:
         print(f"UPDATED TABLE ---> {table_name}")
         
 
-    def remove_from_db(self, table_name, perform_check=True **kwargs):
+    def remove_from_db(self, table_name, perform_check=True, **kwargs):
 
         """
         Parameters:
