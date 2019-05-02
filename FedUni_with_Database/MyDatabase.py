@@ -5,7 +5,6 @@ import sqlite3
 ### Created by Ph@ntom586.
 
 class Database:
-    
     """
         Parameters:
             db_name = The name of the Database you want to create.
@@ -23,7 +22,6 @@ class Database:
     
 
     def create_db(self):
-        
         """
         Description:
             Creates the Database and a cursor to execute sqlite queries.
@@ -39,7 +37,6 @@ class Database:
 
 
     def create_table(self, table_name, *fields):
-
         """
         Parameters:
             table_name = The name of the table you want to create.
@@ -78,7 +75,6 @@ class Database:
 
 
     def select_from_db(self, table_name, select_what=None, msg="Values Fetched!!!", **kwargs):
-        
         """
         Parameters:
             select_what = what do you want to select form a particular table.
@@ -200,11 +196,13 @@ class Database:
         print(f"UPDATED TABLE ---> {table_name}")
         
 
-    def remove_from_db(self, table_name, **kwargs):
+    def remove_from_db(self, table_name, perform_check=True **kwargs):
 
         """
         Parameters:
             table_name = the name of the table from which you want to select from.
+
+            perform_check = if you want to check if the values are in the Database or not.
 
             **kwargs = Field values of the Entry(row) you want to DELETE from the Table.
 
@@ -216,12 +214,13 @@ class Database:
         flag = True
 
         # Making Sure if the Value to be Deleted Even Exists in the Database or not.
-        check = self.select_from_db(table_name, msg="Checking for DELETE Query!!!")
-        for keys in kwargs:
-            if (keys, kwargs[keys]) not in check:
-                flag = False
-                print(f"The Value {(keys, kwargs[keys])} doesn't exists in the Database!!!")
-                break
+        if perform_check:
+            check = self.select_from_db(table_name, msg="Checking for DELETE Query!!!")
+            for keys in kwargs:
+                if (keys, kwargs[keys]) not in check:
+                    flag = False
+                    print(f"The Value {(keys, kwargs[keys])} doesn't exists in the Database!!!")
+                    break
 
         q = f'DELETE FROM {table_name} WHERE '
         
