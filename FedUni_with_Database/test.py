@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import *
 
+import tkinter.ttk as ttk
+
 from tkinter import messagebox, scrolledtext
 
 from MyDatabase import Database
@@ -11,9 +13,11 @@ my_db = Database('records_bank')
 
 win = tk.Tk()
 
-win.geometry('400x350')
-win.minsize(400, 350)
-win.maxsize(400, 350)
+win.geometry('390x550')
+win.minsize(390, 550)
+win.maxsize(390, 550)
+
+style = ttk.Style()
 
 win.title("My Database App")
 
@@ -24,7 +28,18 @@ lname_var = tk.StringVar()
 uid_var = tk.StringVar()
 pas_var = tk.StringVar()
 email_var = tk.StringVar()
-text_widget = tk.scrolledtext.ScrolledText(win, width=12, height=2)
+text_widget = tk.scrolledtext.ScrolledText(win, width=12, height=4)
+text_widget_1 = tk.scrolledtext.ScrolledText(win, width=12, height=6)
+
+
+# ---------------------- Buttons ---------------------------
+
+preview_btn = ''
+register_btn = ''
+signin_btn = ''
+search_btn = ''
+
+SUNKABLE_BUTTON = 'SunkableButton.TButton'
 
 
 # ----------------------- Functions -------------------------
@@ -40,20 +55,33 @@ def clear_pin_entries(des):
 
     global fname_var, lname_var, uid_var, pas_var, email_var
 
-    fname_var.set('')
-    lname_var.set('')
-    email_var.set('')
-
-    if des == 'all':
+    if des == 'userpass':
         uid_var.set('')
         pas_var.set('')
+    elif des == 'cred':
+        fname_var.set('')
+        lname_var.set('')
+        email_var.set('')
+    else:
+        uid_var.set('')
+        pas_var.set('')
+        fname_var.set('')
+        lname_var.set('')
+        email_var.set('')
 
-
+    
 def create_table():
-    my_db.create_table('account_details', 'user_fname text', 'user_lname text', 'user_id integer', 'user_pass integer', 'user_email text')
+    my_db.create_table('account_details',
+                        'user_fname text',
+                        'user_lname text',
+                        'user_id integer',
+                        'user_pass integer',
+                        'user_email text')
 
 
 def add_user(fname, lname, u_id, u_pass, email):
+
+    global register_btn
 
     flag = True
 
@@ -63,41 +91,73 @@ def add_user(fname, lname, u_id, u_pass, email):
         check = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
         print(check)
         for entries in check:
-            if u_id in entries and u_pass in entries:
+            if int(u_id) and int(u_pass) in entries:
                 flag = False
                 messagebox.showwarning('Field Error!!', "Please! Use Another Username and Password!!")
+                clear_pin_entries('userpass')
+                break
 
         if flag:
             my_db.insert_into_db('account_details',fname, lname, u_id, u_pass, email)
-            clear_pin_entries('')
+            clear_pin_entries('cred')
             messagebox.showinfo('User Accounts', 'User has been Added Successfully!')
 
 
-def validate_user(u_id, u_pass):
-    d = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
-    if d:
-        print("User Exists!!!")
-        
-    else:
-        print("User Doesn't Exists!!!")
-        clear_pin_entries('all')
-        messagebox.showerror('Login Error!!', 'Sorry! The User doesn\'t Exists!')
 
+def validate_user(u_id, u_pass):
+
+    global search_btn
+
+    if u_id != '' and u_pass != '':
+        d = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
+        if d:
+            print("User Exists!!!")
+                
+        else:
+            print("User Doesn't Exists!!!")
+            clear_pin_entries('')
+            messagebox.showerror('Login Error!!', 'Sorry! The User doesn\'t Exists!')
+    else:
+        messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
+
+        
 
 def query_db():
-    c = my_db.select_from_db('account_details')
-    # c = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
+    #c = my_db.select_from_db('account_details')
+    c = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
     # for values in c:
     #     print(values)
     print(c)
 
 
+def preview(u_id, u_pass):
+
+    global preview_btn
+
+    if u_id != '' and u_pass != '':
+        result = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
+    else:
+        messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
+
+
+def search(u_fname, u_lname, u_id):
+
+    pass
+
+
+def shortcuts(param):
+    if param == "quit":
+        win.destroy()
+
+
+# ---------------------- Key Shortcuts ------------------
+win.bind("<Control-q>", lambda e:shortcuts("quit"))
 
 my_db.create_db()
 # create_table()
 # my_db.remove_from_db('account_details', False, user_id=1716410101, user_pass=1234)
 # my_db.drop_table('account_etails')
-query_db()
+# query_db()
 
 
 
@@ -105,7 +165,7 @@ query_db()
 
 def create_login_screen():
 
-    global fname_var, lname_var, uid_var, pas_var, email_var
+    global fname_var, lname_var, uid_var, pas_var, email_var, search_btn, preview_btn, register_btn, signin_btn, SUNKABLE_BUTTON
 
     lb1 = tk.Label(win, text="Database App")
     lb1.config(font=("Source Code Pro", 28))
@@ -113,51 +173,74 @@ def create_login_screen():
 
     lb2 = tk.Label(win, text="FIRSTNAME : ")
     lb2.config(font=("Source Code Pro", 10))
-    lb2.grid(row=1, column=0,ipadx=10, sticky="e")
+    lb2.grid(row=1, column=0, sticky="e")
 
     fname = tk.Entry(win, textvariable=fname_var)
-    fname.grid(row=1, column=1, sticky="news")
+    fname.grid(row=1, column=1, pady=2, ipadx=70, sticky="nws")
 
     lb3 = tk.Label(win, text="LASTNAME : ")
     lb3.config(font=("Source Code Pro", 10))
-    lb3.grid(row=2, column=0,ipadx=10, sticky="e")
+    lb3.grid(row=2, column=0, sticky="e")
 
     lname = tk.Entry(win, textvariable=lname_var)
-    lname.grid(row=2, column=1, sticky="news")
+    lname.grid(row=2, column=1, pady=2, ipadx=70, sticky="nws")
 
     lb4 = tk.Label(win, text="USER-ID : ")
     lb4.config(font=("Source Code Pro", 10))
-    lb4.grid(row=3, column=0,ipadx=10, sticky="e")
+    lb4.grid(row=3, column=0, sticky="e")
 
     uid = tk.Entry(win, textvariable=uid_var)
-    uid.grid(row=3, column=1, sticky="news")
+    uid.grid(row=3, column=1, pady=2, ipadx=70, sticky="nws")
 
     lb5 = tk.Label(win, text="PASSWORD : ")
     lb5.config(font=("Source Code Pro", 10))
-    lb5.grid(row=4, column=0,ipadx=10, sticky="e")
+    lb5.grid(row=4, column=0, sticky="e")
 
     pas = tk.Entry(win, textvariable=pas_var)
     pas.config(show="*")
-    pas.grid(row=4, column=1, sticky="news")
+    pas.grid(row=4, column=1, pady=2, ipadx=70, sticky="nws")
 
     lb6 = tk.Label(win, text="EMAIL : ")
     lb6.config(font=("Source Code Pro", 10))
-    lb6.grid(row=5, column=0,ipadx=10, sticky="e")
+    lb6.grid(row=5, column=0, sticky="e")
 
     email = tk.Entry(win, textvariable=email_var)
-    email.grid(row=5, column=1, sticky="news")
+    email.grid(row=5, column=1, pady=2, ipadx=70, sticky="nws")
 
-    text_widget.insert('insert', 'For SignIn Only USER-ID and PASSWORD Fields are required!!')
+    text_widget.insert('insert', """USER-ID and PASSWORD are unique for everyone!!\nFor SignIn Only USER-ID and PASSWORD Fields are required!!""")
     text_widget.grid(row=6, columnspan=2, padx=10, pady=20, sticky="news")
     text_widget.config(state="disabled")
 
-    bt1 = tk.Button(win, text="Register", bg="green", activebackground="green")
-    bt1.bind("<Button-1>", lambda x: add_user(fname.get(), lname.get(), uid.get(), pas.get(), email.get()))
-    bt1.grid(row=7, column=0, padx=10, pady=15, sticky="news")
+    frame_btns = tk.Frame(win)
+    frame_btns.grid(row=7, columnspan=3)
 
-    bt1 = tk.Button(win, text="SignIn", bg="green", activebackground="green")
-    bt1.bind("<Button-1>", lambda x: validate_user(uid.get(), pas.get()))
-    bt1.grid(row=7, column=1, padx=10, pady=15, sticky="news")
+    style.configure(SUNKABLE_BUTTON, foreground='green')
+
+    preview_btn = ttk.Button(frame_btns, text="Preview", style=SUNKABLE_BUTTON)
+    preview_btn.bind("<Button-1>", lambda x: preview(uid.get(), pas.get()))
+    preview_btn.grid(row=0, column=0)
+
+    register_btn = ttk.Button(frame_btns, text="Register", style=SUNKABLE_BUTTON)
+    register_btn.bind("<Button-1>", lambda x: add_user(fname.get(), lname.get(), uid.get(), pas.get(), email.get()))
+    register_btn.grid(row=0, column=1)
+
+    signin_btn = ttk.Button(frame_btns, text="SignIn", style=SUNKABLE_BUTTON)
+    signin_btn.bind("<Button-1>", lambda x: validate_user(uid.get(), pas.get()))
+    signin_btn.grid(row=0, column=2)
+
+    search_btn = ttk.Button(frame_btns, text="Search", style=SUNKABLE_BUTTON)
+    search_btn.bind("<Button-1>", lambda x: search(fname.get(), lname.get(), uid.get()))
+    search_btn.grid(row=0, column=3)
+
+    lb7 = Label(win, text="OUTPUT : ")
+    lb7.grid(row=8, columnspan=2, pady=20)
+
+    text_widget_1.insert('insert', """This is Output Window""")
+    text_widget_1.grid(row=9, columnspan=2, padx=10, sticky="news")
+    text_widget_1.config(state="disabled")
+
+    lb8 = Label(win, text="Press 'Ctrl+q' to Quit the App.")
+    lb8.grid(row=10, columnspan=2, pady=20)
 
 
 def create_user_screen():
@@ -169,5 +252,5 @@ def create_user_screen():
 
 
 
-# create_login_screen()
+create_login_screen()
 win.mainloop()
