@@ -403,6 +403,11 @@ def create_login_screen():
 
 def create_user_screen():
 
+    """
+    Description:
+        Function for the User to provide functionality of Update, View and Delete Account.
+    """
+    
     lb1 = tk.Label(win, text="Database App")
     lb1.config(font=("Source Code Pro", 28))
     lb1.grid(row=0, columnspan=4, ipadx=160, ipady=20)
