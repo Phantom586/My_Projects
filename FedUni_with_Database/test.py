@@ -74,8 +74,8 @@ def create_table():
     my_db.create_table('account_details',
                         'user_fname text',
                         'user_lname text',
-                        'user_id integer',
-                        'user_pass integer',
+                        'user_id text',
+                        'user_pass text',
                         'user_email text')
 
 
@@ -91,7 +91,7 @@ def add_user(fname, lname, u_id, u_pass, email):
         check = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
         print(check)
         for entries in check:
-            if int(u_id) and int(u_pass) in entries:
+            if u_id and u_pass in entries:
                 flag = False
                 messagebox.showwarning('Field Error!!', "Please! Use Another Username and Password!!")
                 clear_pin_entries('userpass')
@@ -123,8 +123,9 @@ def validate_user(u_id, u_pass):
         
 
 def query_db():
-    #c = my_db.select_from_db('account_details')
-    c = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
+    # c = my_db.select_from_db('account_details')
+    c = my_db.select_from_db('account_details', user_id='1716410101')
+    # c = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
     # for values in c:
     #     print(values)
     print(c)
@@ -132,17 +133,46 @@ def query_db():
 
 def preview(u_id, u_pass):
 
-    global preview_btn
-
     if u_id != '' and u_pass != '':
         result = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
+        # print(result)
+        output_win(result, "Preview Results : ")
     else:
         messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
 
 
-def search(u_fname, u_lname, u_id):
+def search(u_fname, u_id):
 
-    pass
+    lst = [['u_fname', u_fname], ['u_id', u_id]]
+
+    # Checking which of the inputs are to be inserted in the Query
+    lst = [i for i in lst if i[1] != '']
+
+    if lst != []:
+        if len(lst) == 1:
+            if lst[0][1] == 'u_fname':
+                result = my_db.select_from_db('account_details', user_fname=u_fname)
+            else:
+                result = my_db.select_from_db('account_details', user_id=u_id)
+        else:
+            result = my_db.select_from_db('account_details', user_id=u_id, user_fname=u_fname)
+
+    output_win(result, "Search Results :")
+
+    
+
+
+def output_win(str, msg):
+
+    text_widget_2 = tk.scrolledtext.ScrolledText(win, width=12, height=6)
+    
+    text_widget_2.insert('insert', f'-------- {msg} --------' + '\n')
+    for text in str:
+        for txt in text:
+            text_widget_2.insert('insert', txt + '\n')
+            text_widget_2.insert('insert', '-----------------------' + '\n')
+    text_widget_2.grid(row=9, columnspan=2, padx=10, sticky="news")
+    text_widget_2.config(state="disabled")
 
 
 def shortcuts(param):
@@ -156,7 +186,7 @@ win.bind("<Control-q>", lambda e:shortcuts("quit"))
 my_db.create_db()
 # create_table()
 # my_db.remove_from_db('account_details', False, user_id=1716410101, user_pass=1234)
-# my_db.drop_table('account_etails')
+# my_db.drop_table('account_details')
 # query_db()
 
 
@@ -166,6 +196,7 @@ my_db.create_db()
 def create_login_screen():
 
     global fname_var, lname_var, uid_var, pas_var, email_var, search_btn, preview_btn, register_btn, signin_btn, SUNKABLE_BUTTON
+    global text_widget_1
 
     lb1 = tk.Label(win, text="Database App")
     lb1.config(font=("Source Code Pro", 28))
@@ -177,6 +208,8 @@ def create_login_screen():
 
     fname = tk.Entry(win, textvariable=fname_var)
     fname.grid(row=1, column=1, pady=2, ipadx=70, sticky="nws")
+
+    fname.focus_set()
 
     lb3 = tk.Label(win, text="LASTNAME : ")
     lb3.config(font=("Source Code Pro", 10))
@@ -229,7 +262,7 @@ def create_login_screen():
     signin_btn.grid(row=0, column=2)
 
     search_btn = ttk.Button(frame_btns, text="Search", style=SUNKABLE_BUTTON)
-    search_btn.bind("<Button-1>", lambda x: search(fname.get(), lname.get(), uid.get()))
+    search_btn.bind("<Button-1>", lambda x: search(fname.get(), uid.get()))
     search_btn.grid(row=0, column=3)
 
     lb7 = Label(win, text="OUTPUT : ")
