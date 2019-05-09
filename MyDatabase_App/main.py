@@ -344,6 +344,7 @@ def pass_verify(u_pass):
         lb1.grid(row=0, columnspan=4, padx=20, sticky="news")
 
         u_p = tk.Entry(top, textvariable=pinentry_var)
+        u_p.config(show='*')
         u_p.grid(row=1, columnspan=4, padx=20, sticky="news", pady=10)
 
         u_p.focus_set()
