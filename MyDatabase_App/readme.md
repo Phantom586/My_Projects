@@ -1,7 +1,7 @@
 # MyDatabase App
 This is a Tkinter Python Application that Uses sqlite3 as Database to store Information Provided by the User.
 
-![FedUni](images/sc_1.png "MyDatabase_App")
+![FedUni](images/sc1.png "MyDatabase_App")
 
 ## Modules :
 ### 1. Preview :
@@ -16,6 +16,18 @@ With this Module you can Login to the Individual Users Account, just by entering
 
 ### 4. Search :
 With this Module You can Search for any User that is present in the Database.
+
+![FedUni](images/sc2.png "MyDatabase_App")
+
+## Modules :
+### 1. Update :
+With this Module you can easily update you **User_FirstName**, **User_LastName** or **User_Email** by clicking on the **LOCKED** Button and Entering the Password For the User(For Verification) and Entering the Values You wish to Change and then *press the **UPDATE** Button*.
+
+### 2. ShowDB :
+With this Module you can view all the entries present in the Database.
+
+### 3. Logout :
+With this Module you can Logout of you Account and return back to the Main Screen of the App.
 
 
 
