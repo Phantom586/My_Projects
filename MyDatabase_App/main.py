@@ -27,6 +27,10 @@ style = ttk.Style()
 # Title for the Window
 win.title("My Database App")
 
+# --------------------- User Details ----------------------
+
+user_details = ''
+
 
 # ---------------------- Entry Widgets Variables -----------
 
@@ -159,6 +163,52 @@ def add_user(fname, lname, u_id, u_pass, email):
             messagebox.showinfo('User Accounts', 'User has been Added Successfully!')
 
 
+def update_user(u_fname, u_lname, u_id, u_pass, email):
+    """
+    fname = the 'First name' of the User to be Updated.
+    lname = the 'Last name' of the User to be Updated.
+    u_id = the 'Id' of the User to be Updated.
+    u_pass = the 'Password' of the User to be Updated.
+    email = the 'email' of the User to be Updated.
+    
+    Description:
+        Function to Update the Details of a User to the Database.
+    """
+    # Indicates whether the Update Process has been completed successfully or not.
+    flag = True
+
+    global user_details
+
+    # Checking if the Entries are Valid or not and Updating the respective info. to the User's Database.
+    if u_fname != '' and u_lname != '' and email != '':
+        
+        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname, 'user_email':email}, user_id=u_id, user_pass=u_pass)
+
+    elif u_fname != '' and u_lname != '' :
+
+        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname}, user_fname=user_details[0], user_lname=user_details[1])
+
+    elif email != '':
+
+        my_db.update_db('account_details', {'user_email':email}, user_id=u_id, user_pass=u_pass)
+
+    else:
+        # If some error Occurs then set the flag to False.
+        flag = False
+
+    if flag == True:
+        # Displaying the Success message.
+        messagebox.showinfo('Success', 'The Details have been Updated Successfully!!')
+        # Calling the query_db function to fetch and display the updated info via the function name provided.
+        query_db(u_id, u_pass, 'extract_info')
+    else:
+        # Displaying the Error message.
+        messagebox.showerror('Error', 'Some Error Occurred during the Process! Please Try Again.')
+
+
+
+
+
 def validate_user(u_id, u_pass):
 
     """
@@ -190,43 +240,50 @@ def validate_user(u_id, u_pass):
         messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
         
 
-def query_db():
+def query_db(u_id, u_pass, call):
 
     """
+    Parameters:
+        u_id = the 'Id' of the User to be Displayed.
+        u_pass = the 'Password' of the User to be Displayed.
+        call = variable to store which function to call at the end.
+
     Description:
         Function to See the Contents of the Database and Debug Whenever necessary.
     """
-    c = my_db.select_from_db('account_details') ## Retrieving all info from the Database.
+    # c = my_db.select_from_db('account_details') ## Retrieving all info from the Database.
+    user = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
     # c = my_db.select_from_db('account_details', user_id='1716410101') ## Retrieving For Specific user_id
     # c = my_db.select_from_db('account_details', ['user_id', 'user_pass']) ## Retrieving user_id and user_pass of all the users in the Database.
     # for values in c:
     #     print(values)
-    print(c)
+    if call == "extract_info":
+        extract_info(user)
 
 
-def preview(u_id, u_pass, msg=None):
+# def preview(u_id, u_pass, msg=None):
 
-    """
-    Parameters:
-        u_id = the 'Id' of the User to be Previewed.
-        u_pass = the 'Password' of the User to be Previewed.
-        msg = for custom messages.
+#     """
+#     Parameters:
+#         u_id = the 'Id' of the User to be Previewed.
+#         u_pass = the 'Password' of the User to be Previewed.
+#         msg = for custom messages.
 
-    Description:
-        Function to just make sure that all the Details filled by the User is Correct.
-    """
-    # Just making Sure all the inputs are Valid.
-    if u_id != '' and u_pass != '':
-        # Retrieving the Details of the User with User_id and User_pass.
-        result = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
-        # print(result)
-        # Passing the Values along with the message to be displayed in the Output Window.
-        if msg:
-            output_win(result, msg)
-        else:
-            output_win(result, "Preview Results : ")
-    else:
-        messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
+#     Description:
+#         Function to just make sure that all the Details filled by the User is Correct.
+#     """
+#     # Just making Sure all the inputs are Valid.
+#     if u_id != '' and u_pass != '':
+#         # Retrieving the Details of the User with User_id and User_pass.
+#         result = my_db.select_from_db('account_details', user_id=u_id, user_pass=u_pass)
+#         # print(result)
+#         # Passing the Values along with the message to be displayed in the Output Window.
+#         if msg:
+#             output_win(result, msg)
+#         else:
+#             output_win(result, "Preview Results : ")
+#     else:
+#         messagebox.showerror('Error!!', 'Blank Fields are not Allowed!!')
 
 
 def search(u_fname, u_id):
@@ -262,25 +319,26 @@ def search(u_fname, u_id):
     output_win(result, "Search Results :")
 
 
-def extract_info(user):
+def extract_info(user, reset=False):
     """
     Parameters:
-        u_id = the 'Id' of the User to be Previewed.
-        u_pass = the 'Password' of the User to be Previewed.
+        user = the Details of the user to be Displayed.
+        reset = to reset the values in the display window.
 
     Description:
         to extract all different fields from the specific row of a table.
     """
 
-    global fname_var, lname_var, uid_var, pas_var, email_var
-    # print(user)
-    user = list(user[0])
-    # print(user)
-    fname_var.set(user[0])
-    lname_var.set(user[1])
-    uid_var.set(user[2])
-    pas_var.set(user[3])
-    email_var.set(user[4])
+    global fname_var, lname_var, uid_var, pas_var, email_var, user_details
+    
+    if reset == False:
+        user_details = list(user[0])
+
+    fname_var.set(user_details[0])
+    lname_var.set(user_details[1])
+    uid_var.set(user_details[2])
+    pas_var.set(user_details[3])
+    email_var.set(user_details[4])
 
 
 def output_win(str, msg):
@@ -297,10 +355,12 @@ def output_win(str, msg):
     text_widget_2 = tk.scrolledtext.ScrolledText(win, width=12, height=6)
     
     text_widget_2.insert('insert', f'-------- {msg} --------' + '\n')
+    text_widget_2.insert('insert', '============================' + '\n')
     for text in str:
         for txt in text:
             text_widget_2.insert('insert', txt + '\n')
             text_widget_2.insert('insert', '-----------------------' + '\n')
+        text_widget_2.insert('insert', '============================' + '\n')
     text_widget_2.grid(row=9, columnspan=2, padx=10, sticky="news")
     text_widget_2.config(state="disabled")
 
@@ -370,7 +430,7 @@ def btn_status(t_pass=None, u_pass=None):
     Description:
         to check whether the button is in LOCKED state or not.
     """
-    global statusbtn_var, fname, lname, email, status, top, pinentry_var, img, status_btn
+    global statusbtn_var, fname, lname, email, status, top, pinentry_var, img, status_btn, user_details
 
     # Checking if the Passwords Exixts or not.
     if t_pass and u_pass:
@@ -404,11 +464,39 @@ def btn_status(t_pass=None, u_pass=None):
         img = PhotoImage(file=lock_img)
         # Setting that icon to the Button
         status_btn.config(image=img)
+        # Resetting the Original Values.
+        extract_info(user_details, True)
         # Making the Entries Non-Editable.
         fname.config(state=DISABLED)
         lname.config(state=DISABLED)
         email.config(state=DISABLED)
+        # Setting the Global Variable to LOCKED.
         status = "LOCKED"
+
+
+def logout():
+    """
+    Description:
+        to Logout of the Current User's Account.
+    """
+    clear_pin_entries('')
+    remove_all_widgets()
+    create_login_screen()
+
+
+def show_db():
+    """
+    Description:
+        To Display all the Entries Present in the Database.
+    """
+
+    # Acquiring All the Entries from the Database.
+    lst = my_db.select_from_db('account_details')
+
+    output_win(lst, "All Database Entries.")
+
+
+
 
 
 
@@ -494,7 +582,9 @@ def create_login_screen():
     # --------------------------------------------------------
 
     # ----------------- Information Text Block ---------------
-    text_widget.insert('insert', """USER-ID and PASSWORD are unique for everyone!!\nFor SignIn Only USER-ID and PASSWORD Fields are required!!\nTo Search Somebody Input his USER-ID and PASSWORD.""")
+    text_widget.insert('insert', "USER-ID and PASSWORD are unique for everyone!!\
+                                    \nFor SignIn Only USER-ID and PASSWORD Fields are required!!\
+                             To Search Somebody Input his USER-ID and PASSWORD.")
     text_widget.grid(row=6, columnspan=2, padx=10, pady=20, sticky="news")
     text_widget.config(state="disabled")
 
@@ -505,25 +595,25 @@ def create_login_screen():
 
     style.configure(SUNKABLE_BUTTON, foreground='green')
 
-    preview_btn = ttk.Button(frame_btns, text="Preview", style=SUNKABLE_BUTTON)
-    preview_btn.bind("<Button-1>", lambda x: preview(uid.get(), pas.get(), '1'))
-    preview_btn.grid(row=0, column=0)
+    # preview_btn = ttk.Button(frame_btns, text="Preview", style=SUNKABLE_BUTTON)
+    # preview_btn.bind("<Button-1>", lambda x: preview(uid.get(), pas.get(), '1'))
+    # preview_btn.grid(row=0, column=0)
 
     register_btn = ttk.Button(frame_btns, text="Register", style=SUNKABLE_BUTTON)
     register_btn.bind("<Button-1>", lambda x: add_user(fname.get(), lname.get(), uid.get(), pas.get(), email.get()))
-    register_btn.grid(row=0, column=1)
+    register_btn.grid(row=0, column=0)
 
     signin_btn = ttk.Button(frame_btns, text="SignIn", style=SUNKABLE_BUTTON)
     signin_btn.bind("<Button-1>", lambda x: validate_user(uid.get(), pas.get()))
-    signin_btn.grid(row=0, column=2)
+    signin_btn.grid(row=0, column=1)
 
     search_btn = ttk.Button(frame_btns, text="Search", style=SUNKABLE_BUTTON)
     search_btn.bind("<Button-1>", lambda x: search(fname.get(), uid.get()))
-    search_btn.grid(row=0, column=3)
+    search_btn.grid(row=0, column=2)
 
     clear_btn = ttk.Button(frame_btns, text="Clear", style=SUNKABLE_BUTTON)
     clear_btn.bind("<Button-1>", lambda x: clear_pin_entries(''))
-    clear_btn.grid(row=0, column=4)
+    clear_btn.grid(row=0, column=3)
 
     # --------------- The Output Text Block -----------------------
 
@@ -552,6 +642,8 @@ def create_user_screen(user):
 
     # Text-Widgets for Displaying the Info and Results.
     text_widget = tk.scrolledtext.ScrolledText(win, width=12, height=6)     # Text-Widget Variable
+    text_widget_1 = tk.scrolledtext.ScrolledText(win, width=12, height=6)   # Another Text-Widget Variable
+
     
     lb1 = tk.Label(win, text="Database App")
     lb1.config(font=("Source Code Pro", 28))
@@ -603,14 +695,15 @@ def create_user_screen(user):
     # --------------------------------------------------------
 
     # ----------------- Information Text Block ---------------
-    text_widget.insert('insert', """To Make Changes to any of the Input Fields(Except USER-ID and PASSWORD) just Press the LOCKED button and then type in the new Entries and then Press UPDATE button!!""")
+    text_widget.insert('insert', "To Make Changes to any of the Input Fields(Except USER-ID and PASSWORD)just Press the LOCKED button and then type in the new Entries and then Press UPDATE button,and hit UNLOCKED Button to LOCK again!!\
+         If you LOGOUT without UPDATING the changes made then your Progress will be LOST!!")
     text_widget.grid(row=7, columnspan=2, padx=10, pady=20, sticky="news")
     text_widget.config(state="disabled")
 
     # ----------------- Buttons --------------------
 
     frame_btns = tk.Frame(win)
-    frame_btns.grid(row=8, columnspan=3)
+    frame_btns.grid(row=8, columnspan=3, ipady=10)
 
     style.configure(SUNKABLE_BUTTON, foreground='green')
 
@@ -624,6 +717,19 @@ def create_user_screen(user):
     update_btn = ttk.Button(frame_btns, text="Update", style=SUNKABLE_BUTTON)
     update_btn.bind("<Button-1>", lambda x: update_user(fname.get(), lname.get(), uid.get(), pas.get(), email.get()))
     update_btn.grid(row=0, column=1)
+
+    db_btn = ttk.Button(frame_btns, text="ShowDB", style=SUNKABLE_BUTTON)
+    db_btn.bind("<Button-1>", lambda x: show_db())
+    db_btn.grid(row=0, column=2)
+
+    logout_btn = ttk.Button(frame_btns, text="Logout", style=SUNKABLE_BUTTON)
+    logout_btn.bind("<Button-1>", lambda x: logout())
+    logout_btn.grid(row=0, column=3)
+
+    # # ----------------- Information Text Block ---------------
+    # text_widget_1.insert('insert', "")
+    # text_widget_1.grid(row=7, columnspan=2, padx=10, pady=20, sticky="news")
+    # text_widget_1.config(state="disabled")
 
 
 
