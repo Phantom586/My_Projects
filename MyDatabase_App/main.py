@@ -170,9 +170,6 @@ def check_validity(str, typ):
         else:
             return True
 
-    
-
-    
 
 def add_user(fname, lname, u_id, u_pass, email):
 
