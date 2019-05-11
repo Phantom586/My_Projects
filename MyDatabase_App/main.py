@@ -9,6 +9,9 @@ from tkinter import messagebox, scrolledtext, PhotoImage
 # importing my Custom-sqlite-Database File
 from MyDatabase import Database
 
+# importing the Regular Expression Module to Check for the Validity of the Entered Details.
+import re
+
 # Creating an instance of the Database Class
 my_db = Database('records_bank')
 
@@ -118,6 +121,59 @@ def create_table():
                         'user_email text')
 
 
+def check_validity(str, typ):
+    """
+    Parameters:
+        str = the String which is to be Validated.
+        typ = which kind of string is it ? i.e., (Password, Email).
+
+    Description:
+        To check the Validity of the Passed String.
+    """
+
+    global pas_var, email_var
+
+    # 'r' is used to treat the string as a 'raw string' i.e., so that
+    # things like '\n', '\r' etc. are not considerd as Escape Sequences, just text.
+
+    if typ == "email":
+        # Compiling the Regular Expression for Checking the email pattern.
+        email_pattern = re.compile(r'[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+
+        # Now Matching the Provided Pattern
+        match = email_pattern.match(str)
+
+        # Checking the Output of the match.
+        if match == None:
+            messagebox.showwarning('Warning', "The Email you Entered is incorrect!!\
+                            Example: abc@example.com")
+            email_var.set('')
+            return False
+        else:
+            return True
+
+    elif typ == "password":
+        # Compiling the RE for Checking the Password.
+        # Such that First character should be Capital and password should contain Digits and Special Characters. 
+        pass_pattern = re.compile(r'[A-Z]+[a-zA-Z0-9!@#$%^&*()_+]+[!@#$%^&*()_+]+[a-zA-Z0-9]+')
+
+        # Now Matching the Provided Pattern
+        match = pass_pattern.match(str)
+
+        # Checking the Output of the match.
+        if match == None:
+            messagebox.showwarning('Warning', "The required Criteria for the Password doesn\'t Match!!\
+            1. First character should be Capital.\
+            2. The Password Should contain atleast one special character and Digit.")
+            pas_var.set('')
+            return False
+        else:
+            return True
+
+    
+
+    
+
 def add_user(fname, lname, u_id, u_pass, email):
 
     """
@@ -144,6 +200,17 @@ def add_user(fname, lname, u_id, u_pass, email):
         # Retrieving the user_id and user_pass of all the Users and checking if the User exist already. 
         check = my_db.select_from_db('account_details', ['user_id', 'user_pass'])
         # print(check)
+
+        # Checking the Validity of User Email and Password.
+        pin_isValid = check_validity(u_pass, "password")
+        email_isValid = check_validity(email, "email")
+
+        if pin_isValid == False or email_isValid == False:
+            # If Either of the Values are Invalid then, giving a proper warning message.
+            messagebox.showerror('Error!!', "Registration Failed! Please Try Again.")
+            flag = False
+
+
         for entries in check:
             # If user_id and user_pass is present already in the Database then issue a warning for that.
             if u_id and u_pass in entries:
@@ -384,18 +451,22 @@ def pass_verify(u_pass):
         u_pass = the 'user_pass' of the user.
 
     Description:
-        to verify if the user is Authentic or not.
+        to verify if the user is Authorised or not to make the Changes to the records.
     """
 
     global top, status, pinentry_var
 
+    # Checking Whether the status is LOCKED or UNLOCKED.
     if status ==  "LOCKED":
-
+        # If LOCKED then, create a Toplevel Window on the root window.
         top = tk.Toplevel(win)
+        # assigning thwe window a title.
         top.title("Verify!!")
 
+        # Configuring the Style of the Buttons.
         style.configure(SUNKABLE_BUTTON, foreground='green')
 
+        # Setting the Geometry of the Window.
         top.geometry('220x100')
         top.minsize(220, 100)
         top.maxsize(220, 100)
@@ -416,7 +487,7 @@ def pass_verify(u_pass):
         top.mainloop()
 
     else:
-        
+        # If staus is UNLOCKED then directly call btn_status function.
         btn_status()
 
 
