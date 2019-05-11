@@ -10,8 +10,8 @@ With this Module you can register new users to the Database, just by providing h
 While Registering a User there are some things you need to consider :
 1. **Email** should always be in the form of *abc@example.com*.
 2. **Password** 
-      a. First character should be *Capital*.
-      b. It should contain atleast one *Special Characters(!@#$%^&*())* and *Digits(0-9)*.
+      - First character should be **_Capital_**.
+      - It should contain atleast one **_Special Characters(!@#$%^&*())_** and **_Digits(0-9)_**.
  
  **Regular Expressions** are Used in order to make sure that these requirements are met and if not, proper error messages have been provided to notify it to the User.
  
