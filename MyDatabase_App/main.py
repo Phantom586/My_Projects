@@ -246,15 +246,15 @@ def update_user(u_fname, u_lname, u_id, u_pass, email):
     # Checking if the Entries are Valid or not and Updating the respective info. to the User's Database.
     if u_fname != '' and u_lname != '' and email != '':
         
-        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname, 'user_email':email}, user_id=u_id, user_pass=u_pass)
+        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname, 'user_email':email}, user_id=user_details[2], user_pass=user_details[3])
 
     elif u_fname != '' and u_lname != '' :
 
-        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname}, user_fname=user_details[0], user_lname=user_details[1])
+        my_db.update_db('account_details', {'user_fname':u_fname, 'user_lname':u_lname}, user_id=user_details[2], user_pass=user_details[3])
 
     elif email != '':
 
-        my_db.update_db('account_details', {'user_email':email}, user_id=u_id, user_pass=u_pass)
+        my_db.update_db('account_details', {'user_email':email}, user_id=user_details[2], user_pass=user_details[3])
 
     else:
         # If some error Occurs then set the flag to False.

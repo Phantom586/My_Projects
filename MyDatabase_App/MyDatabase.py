@@ -177,28 +177,30 @@ class Database:
 
         if set_values != {}:
             for key in set_values:
-                q += f'{key}={set_values[key]} AND '
+                q += f'{key}=:{key}, '
             # removing the extra 'AND' from the query.
-            q = q[:len(q)-4]
+            q = q[:len(q)-2]
         else:
             flag = False
             print("Update Failed!! Please pass the Values to Update in the Table.")
 
         if kwargs:
-            q += "WHERE "
+            q += " WHERE "
             for key in kwargs:
-                q += f'{key}={kwargs[key]} AND '
+                q += f'{key}=:{key} AND '
             # removing the extra 'AND' from the query.
             q = q[:len(q)-4]
         else:
             flag = False
             print("Update Failed!! Please pass the Correct Matching Parameters.")
 
+        # Merging the Two Dictionaries to form one to pass it to conn.execute
+        set_values.update(kwargs)
         # Checking If everything is Alright. 
         if flag == True:
             # Context Manager for the Connection object.
             with self.conn:
-                self.c.execute(q)
+                self.c.execute(q, set_values)
 
         # Making COMMIT to the Database.
         self.conn.commit()
